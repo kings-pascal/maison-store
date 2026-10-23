@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scrollbar-gutter: stable;
+  background-color: #000;
+}
+
+body {
+  margin: 0;
+}
+
+/* Scent marquee and drifting clouds (Home statement section) */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes scent-drift {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(60px, -40px, 0) scale(1.15);
+  }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 70s linear infinite;
+}
+
+.marquee-track--reverse {
+  animation-direction: reverse;
+}
+
+.scent-cloud {
+  animation: scent-drift 16s ease-in-out infinite alternate;
+}
+
+.text-outline {
+  color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+}
+
+/* Product card light ring */
+@property --glow-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes glow-spin {
+  to {
+    --glow-angle: 360deg;
+  }
+}
+
+@keyframes glow-fade {
+  0% {
+    opacity: 0;
+  }
+  20%,
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.glow-ring {
+  position: absolute;
+  inset: 0;
+  padding: 1.5px;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: conic-gradient(
+    from var(--glow-angle),
+    transparent 0%,
+    transparent 55%,
+    var(--glow-color, #fff) 85%,
+    transparent 100%
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  filter: drop-shadow(0 0 4px var(--glow-color, #fff));
+}
+
+[data-glow='on'] .glow-ring--sweep {
+  animation:
+    glow-spin 1.8s linear both,
+    glow-fade 1.8s ease-out both;
+}
+
+.glow-ring--hover {
+  transition: opacity 0.3s ease;
+}
+
+.group:hover .glow-ring--hover,
+.group:focus-within .glow-ring--hover {
+  opacity: 1;
+  animation: glow-spin 3.5s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track,
+  .scent-cloud {
+    animation: none;
+  }
+
+  .glow-ring {
+    display: none;
+  }
+}
